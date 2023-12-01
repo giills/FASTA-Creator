@@ -6,8 +6,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import Use_Case.FindSequence.FindSequenceDataAccessInterface;
+import Use_Case.WriteEntry.WriteEntryDataAccessInterface;
 
-public class FinderDataAccessObject implements FindSequenceDataAccessInterface{
+public class FinderDataAccessObject implements FindSequenceDataAccessInterface, WriteEntryDataAccessInterface{
     private File blastResults;
     private String error = null;
     public FinderDataAccessObject(){}
@@ -42,7 +43,8 @@ public class FinderDataAccessObject implements FindSequenceDataAccessInterface{
             int boundsFound = 0;
             String rawSequence = "";
             String lowerBound = "\\s";
-            String upperBound = "[^0-9]*";
+
+            String upperBound = ".*\\s*";
             for (int i = 0; i < bounds.get(0).length(); i++){
                 lowerBound += "[" + bounds.get(0).charAt(i) + "]";
             }
@@ -112,9 +114,6 @@ public class FinderDataAccessObject implements FindSequenceDataAccessInterface{
         }
         if (!(name.contains(species.toUpperCase()))){
             name = species.toUpperCase() + "." + name;
-        }
-        else{
-            this.error = "there was an error finding the scaffold";
         }
         toReturn.add(name);
         for (int i = 0; i < rawData.get(1).length(); i++){

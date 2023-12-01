@@ -37,11 +37,8 @@ public class Main extends JFrame {
         views.add(playerSearchView, playerSearchView.viewName);
         */
 
-
         viewManagerModel.setActiveView(view.viewName);
         viewManagerModel.firePropertyChanged();
-
-
 
         application.pack();
         application.setVisible(true);

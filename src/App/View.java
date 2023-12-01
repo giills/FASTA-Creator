@@ -14,12 +14,14 @@ import Adapter.Finder.FinderController;
 import Adapter.View.ViewModel;
 import Adapter.View.ViewState;
 import Adapter.Writer.WriterController;
+import App.JMultilineLabel;
 
 public class View extends JPanel implements ActionListener, PropertyChangeListener{
     public final String viewName = "view";
     private final ViewModel viewModel;
     private final JTextField speciesInputField = new JTextField(15);
-    private final JLabel result = new JLabel("");
+    final JMultilineLabel result;
+    //private final JLabel result = new JLabel("");
     private final JLabel speciesLabel = new JLabel("Enter Species Name Abbreviation");
     private final JTextField locationInputField = new JTextField(30);
     private final JLabel label = new JLabel("Enter Locations");
@@ -30,6 +32,10 @@ public class View extends JPanel implements ActionListener, PropertyChangeListen
     private final WriterController writerController;
 
     public View(FinderController finderController, ViewModel viewModel, WriterController writerController) {
+        result = new JMultilineLabel();
+        result.setText("");
+        result.setMaxWidth(400);
+        result.setBorder(BorderFactory.createRaisedBevelBorder());
 
         this.finderController = finderController;
         this.writerController = writerController;
@@ -95,7 +101,7 @@ public class View extends JPanel implements ActionListener, PropertyChangeListen
                     @Override
                     public void keyTyped(KeyEvent e) {
                         ViewState currentState = viewModel.getState();
-                        String text = speciesInputField.getText() + e.getKeyChar();
+                        String text = locationInputField.getText() + e.getKeyChar();
                         currentState.setLocation(text);
                         viewModel.setState(currentState);
                     }

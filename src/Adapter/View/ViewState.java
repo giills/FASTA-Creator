@@ -40,11 +40,10 @@ public class ViewState {
         setResult(genes);
     }
     public void setResult(Map<String, String> result) {
-        String toSet = "<html><body>";
+        String toSet = "";
         for (String key : result.keySet()){
-            toSet += (key + "With length" + result.get(key).length() + "<br>"+ result.get(key) + "<br><br>");
+            toSet += (key + " with length " + result.get(key).length() + "\n"+ result.get(key) + "\n");
         }
-        toSet += "</body></html>";
         this.result = toSet;
     }
     public String getResult(){
