@@ -29,7 +29,7 @@ public class FinderDataAccessObject implements FindSequenceDataAccessInterface{
         this.error = newError;
     }
 
-    public ArrayList<String> findRawData(ArrayList<String> bounds) throws Exception{
+    private ArrayList<String> findRawData(ArrayList<String> bounds){
         try {
             // Initialize reader for the blast results file
             FileInputStream fstream = new FileInputStream(this.blastResults);
@@ -92,6 +92,7 @@ public class FinderDataAccessObject implements FindSequenceDataAccessInterface{
             ArrayList<String> toReturn = new ArrayList<>();
             toReturn.add(recentScaffold);
             toReturn.add(rawSequence);
+            br.close();
             return toReturn;
 
         }catch (Exception e) {
@@ -100,20 +101,44 @@ public class FinderDataAccessObject implements FindSequenceDataAccessInterface{
         }
     }
 
+    private ArrayList<String> cleanRawData(ArrayList<String> rawData, String species){
+        ArrayList<String> toReturn = new ArrayList<>();
+        String name = "";
+        String sequence = "";
+        Pattern pattern = Pattern.compile("[A-Za-z0-9_]+");
+        Matcher matcher = pattern.matcher(rawData.get(0));
+        if (matcher.find()) {
+            name += matcher.group();
+        }
+        if (!(name.contains(species.toUpperCase()))){
+            name = species.toUpperCase() + "." + name;
+        }
+        else{
+            this.error = "there was an error finding the scaffold";
+        }
+        toReturn.add(name);
+        for (int i = 0; i < rawData.get(1).length(); i++){
+            String check = String.valueOf(rawData.get(1).charAt(i));
+            Pattern patternSeq = Pattern.compile("[A-Z]*");
+            Matcher matcherSeq = patternSeq.matcher(check);
+            if (matcherSeq.find()) {
+                sequence += matcherSeq.group();
+            }
+        }
+        if (sequence.length() == 0){
+            this.error = "somethine went wrong finding the sequence";
+        }
+        toReturn.add(sequence);
+        return toReturn;
+    }
+
 
     public ArrayList<String> findGene(ArrayList<String> bounds, String species){
         updateFile("files/blast_check_" + species.toUpperCase());
         if (this.error != null){
             return null;
         }
-        try{
-            return findRawData(bounds);
-        } catch(Exception e)
-        {
-            ArrayList<String> ret = new ArrayList<>();
-            ret.add("AKHHHHHHHHHHHHHH");
-            return ret;
-        }
+        return cleanRawData(findRawData(bounds), species);   
     }
     
 }
