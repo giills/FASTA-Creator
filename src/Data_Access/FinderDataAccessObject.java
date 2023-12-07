@@ -30,6 +30,27 @@ public class FinderDataAccessObject implements FindSequenceDataAccessInterface, 
         this.error = newError;
     }
 
+    private boolean containsBound(String upperBound, String line){
+        String first = "\\s+";
+        for (int i = 0; i < upperBound.length(); i++){
+                first += "[" + upperBound.charAt(i) + "]";
+            }
+        String last = first + "";
+        first += "\\s+";
+        last += "$";
+        Pattern patternFirst = Pattern.compile(first); // regex for bounds
+                Matcher matcherFirst = patternFirst.matcher(line);
+                if(matcherFirst.find()){
+                    return true;
+                }
+        Pattern patternLast = Pattern.compile(last); // regex for bounds
+                Matcher matcherLast = patternLast.matcher(line);
+                if(matcherLast.find()){
+                    return true;
+                }        
+        return false;
+    }
+
     private ArrayList<String> findRawData(ArrayList<String> bounds){
         try {
             // Initialize reader for the blast results file
@@ -38,20 +59,12 @@ public class FinderDataAccessObject implements FindSequenceDataAccessInterface, 
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String strLine;
             String recentScaffold = "";
-            // bounds found: -1 after upper bound is found, 0 when neither have been found
-            // 1 when upper bound has been found in the same iterations, 2 otherwise
-            int boundsFound = 0;
             String rawSequence = "";
-            String lowerBound = "\\s";
+            String lowerBound = bounds.get(1);
+            String upperBound = bounds.get(0);
 
-            String upperBound = ".*\\s*";
-            for (int i = 0; i < bounds.get(0).length(); i++){
-                lowerBound += "[" + bounds.get(0).charAt(i) + "]";
-            }
-            lowerBound += "\\s[^0-9]*";
-            for (int i = 0; i < bounds.get(1).length(); i++){
-                upperBound += "[" + bounds.get(1).charAt(i) + "]";
-            }
+            boolean l = false;
+            boolean u = false;
             // Go through lines of text file
             while ((strLine = br.readLine()) != null) {
                 // If line contains a scaffold, save it as the most recent one
@@ -60,37 +73,47 @@ public class FinderDataAccessObject implements FindSequenceDataAccessInterface, 
                 if (matcher.find()) {
                     recentScaffold = matcher.group();
                 }
-                // If line contains the number of the first bound (ALONE), save the line to raw sequence
-                Pattern patternBounds = Pattern.compile(lowerBound); // regex for bounds
-                Matcher matcherBounds = patternBounds.matcher(strLine);
-                if(matcherBounds.find()){
-                    boundsFound = 2;
-                    rawSequence += matcherBounds.group();
+                // If lower bound is found
+                if (containsBound(lowerBound, strLine)){
+                    // If both bounds are on the same line
+                    if(containsBound(upperBound, strLine)){
+                        rawSequence = strLine;
+                        break;
+                    }
+                    // If upper bound was already found
+                    else if (u){
+                        rawSequence += strLine;
+
+                        break;
+                    }
+                    else{
+                        rawSequence += strLine;
+                        l = true;
+                    }
                 }
-                //If the lines contains the number of the second bound (ALONE), save the line and end
-                Pattern patternUpperBound = Pattern.compile(upperBound); // regex for bounds
-                Matcher matcherUpperBound = patternUpperBound.matcher(strLine);
-                if(matcherUpperBound.find()){
-                    boundsFound = -1;
-                    rawSequence += matcherUpperBound.group();
+                else if (containsBound(upperBound, strLine)){
+                    if (l){
+                        rawSequence += strLine;
+                        break;
+                    }
+                    else{
+                        rawSequence += strLine;
+                        u = true;
+                    }
                 }
                 // If the first bound has been found and the line is from the subject, save the line to raw sequence
-                if (boundsFound > 0){
-                    if (boundsFound == 1){
+                if ((u) | (l)){
+                    // If the line hasnt already been added
+                    if (!(rawSequence.contains(strLine))){
                         Pattern patternSubject = Pattern.compile("Sbjct(.)*");
                         java.util.regex.Matcher matcherSubject = patternSubject.matcher(strLine);
                         while(matcherSubject.find()){
                         rawSequence += strLine;
+                        strLine.replace("Sbjct", "");
                         }
                     }
-                    else{
-                        boundsFound = 1;
-                    }
                 }
-                if (boundsFound == -1){
-                    break;
-                }
-            } 
+            }
             ArrayList<String> toReturn = new ArrayList<>();
             toReturn.add(recentScaffold);
             toReturn.add(rawSequence);
@@ -116,9 +139,14 @@ public class FinderDataAccessObject implements FindSequenceDataAccessInterface, 
             name = species.toUpperCase() + "." + name;
         }
         toReturn.add(name);
-        for (int i = 0; i < rawData.get(1).length(); i++){
-            String check = String.valueOf(rawData.get(1).charAt(i));
-            Pattern patternSeq = Pattern.compile("[A-Z]*");
+        if (rawData.get(1).contains("Sbjct")){
+            System.out.println(true);
+        }
+        String temp = rawData.get(1);
+        temp = temp.replace("Sbjct", "");
+        for (int i = 0; i < temp.length(); i++){
+            String check = String.valueOf(temp.charAt(i));
+            Pattern patternSeq = Pattern.compile("[A-Z]*[*]*");
             Matcher matcherSeq = patternSeq.matcher(check);
             if (matcherSeq.find()) {
                 sequence += matcherSeq.group();
