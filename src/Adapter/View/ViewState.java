@@ -14,13 +14,20 @@ public class ViewState {
     public void setSpecies(String species) {
         this.species = species;
     }
-    private String location = "";
+    private String[] location = new String[1];
 
-    public String getLocation() {
+    public String[] getArrayLocation(){
         return location;
     }
+    public String getLocation() {
+        String temp = "";
+        for (String i : location){
+            temp += i + "\n";
+        }
+        return temp;
+    }
 
-    public void setLocation(String location) {
+    public void setLocation(String[] location) {
         this.location = location;
     }
 

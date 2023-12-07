@@ -13,13 +13,12 @@ public class FinderController {
         this.finderInteractor = finderInteractor;
     }
 
-    public void execute(String species, String location){
+    public void execute(String species, String[] splited){
         // go from string to map string string
         ArrayList<Map<String, String>> bounds = new ArrayList<>();
-        String[] splited = location.split("\\n+");
         for (int i = 0; i < splited.length; i++){
             bounds.add(new HashMap<String, String>());
-            String[] single = location.split("\\s+");
+            String[] single = splited[i].split("\\s+");
             for (int j = 0; j < single.length; j = j+2){
                 Pattern pattern = Pattern.compile("[0-9]+");
                 Matcher matcher = pattern.matcher(single[j]);
@@ -27,7 +26,7 @@ public class FinderController {
                     Pattern patternTwo = Pattern.compile("[0-9]+");
                     Matcher matcherTwo = patternTwo.matcher(single[j+1]);
                     if (matcherTwo.find()) {
-                        
+
                         bounds.get(i).put(matcher.group(), matcherTwo.group());
                     }
                 }
