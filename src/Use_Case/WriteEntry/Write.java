@@ -1,13 +1,13 @@
-package Use_Case;
+package Use_Case.WriteEntry;
 import java.util.*;
 ////import java.io.*;
 //package com.DataFlair.FileOpening;
 //import java.awt.Desktop;
 //import java.io.*;
 //import org.apache.commons.text.StringEscapeUtils;
-public class Writer {
+public class Write {
 
-    public Writer(){
+    public Write(){
         
     }
 
