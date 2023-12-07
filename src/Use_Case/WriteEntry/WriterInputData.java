@@ -1,4 +1,4 @@
-package Use_Case;
+package Use_Case.WriteEntry;
 public class WriterInputData{
     private String content;
     private String name;
