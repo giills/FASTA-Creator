@@ -14,7 +14,7 @@ public class FinderController {
     }
 
     public void execute(String species, String[] splited){
-        // go from string to map string string
+        // go from string to map string
         ArrayList<Map<String, String>> bounds = new ArrayList<>();
         for (int i = 0; i < splited.length; i++){
             bounds.add(new HashMap<String, String>());
