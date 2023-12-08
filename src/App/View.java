@@ -59,7 +59,7 @@ public class View extends JPanel implements ActionListener, PropertyChangeListen
                     public void actionPerformed(ActionEvent e) {
                         if (e.getSource().equals(write)) {
                             ViewState currentState = viewModel.getState();
-                            if ((currentState.getSpecies() == "") | (currentState.getGenes().keySet().size() == 0)){
+                            if ((currentState.getSpecies() == "") | (currentState.getGenes().keySet().size() == 0) | currentState.getResult() == ""){
                                 JOptionPane.showMessageDialog(null, "Nothing to write!");
                             }
                             else{

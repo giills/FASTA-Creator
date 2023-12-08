@@ -14,7 +14,7 @@ public class ViewState {
     public void setSpecies(String species) {
         this.species = species;
     }
-    private String[] location = new String[1];
+    private String[] location = new String[10000];
 
     public String[] getArrayLocation(){
         return location;
