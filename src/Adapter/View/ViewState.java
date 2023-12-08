@@ -46,6 +46,7 @@ public class ViewState {
         this.genes = genes;
         setResult(genes);
     }
+    // For user
     public void setResult(Map<String, String> result) {
         String toSet = "";
         for (String key : result.keySet()){
