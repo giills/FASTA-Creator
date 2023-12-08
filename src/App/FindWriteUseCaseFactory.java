@@ -31,7 +31,7 @@ public class FindWriteUseCaseFactory {
     }
 
     private static FinderController createFindCase(ViewManagerModel viewManagerModel, ViewModel viewModel, FindSequenceDataAccessInterface findDataAccessObject, WriterController writerController){
-        FinderOutputBoundary finderOutputBoundary = new FinderPresenter(writerController, viewManagerModel, viewModel);
+        FinderOutputBoundary finderOutputBoundary = new FinderPresenter(viewModel);
 
         FinderInputBoundary finderInteractor = new FindSequence(finderOutputBoundary, findDataAccessObject);
 
