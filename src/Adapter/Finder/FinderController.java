@@ -18,19 +18,13 @@ public class FinderController {
         ArrayList<Map<String, String>> bounds = new ArrayList<>();
         for (int i = 0; i < splited.length; i++){
             bounds.add(new HashMap<String, String>());
-            String[] temp = splited[i].split("\\s+");
-            ArrayList<String> single = new ArrayList<>();
-            for (int k = 0; k < temp.length; k++){
-                if (!(temp[k] == "")){
-                    single.add(temp[k]);
-                }
-            }
-            for (int j = 0; j < single.size(); j = j+2){
+            String[] single = splited[i].split("\\s+");
+            for (int j = 0; j < single.length; j = j+2){
                 Pattern pattern = Pattern.compile("[0-9]+");
-                Matcher matcher = pattern.matcher(single.get(j));
+                Matcher matcher = pattern.matcher(single[j]);
                 if (matcher.find()) {
                     Pattern patternTwo = Pattern.compile("[0-9]+");
-                    Matcher matcherTwo = patternTwo.matcher(single.get(j+1));
+                    Matcher matcherTwo = patternTwo.matcher(single[j+1]);
                     if (matcherTwo.find()) {
 
                         bounds.get(i).put(matcher.group(), matcherTwo.group());
